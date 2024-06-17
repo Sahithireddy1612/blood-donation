@@ -1,0 +1,15 @@
+.donate-button {
+    background-color: purple;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .donate-button:hover {
+    background-color: darkviolet;
+    transform: scale(1.05);
+  }
+  

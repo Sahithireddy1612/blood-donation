@@ -1,0 +1,22 @@
+.submitted-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    background-color: #f4f7f6;
+    padding: 20px;
+  }
+  
+  .submitted-container h1 {
+    font-size: 2.5rem;
+    color: rgb(160, 89, 160);
+    margin-bottom: 20px;
+  }
+  
+  .submitted-container p {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
