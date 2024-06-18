@@ -30,7 +30,7 @@ function App() {
       </header> */}
       {/* <ProjectNavbar/> */}
       <Navigation/>
-      <ProjectFooter/>
+      {/* <ProjectFooter/> */}
       {/* <RecipientsForm/> */}
       
      

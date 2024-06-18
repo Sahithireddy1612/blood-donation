@@ -48,7 +48,7 @@ const Recipients = () => {
                   variant="primary"
                   onClick={() => window.location.href = `tel:${recipient['Contact-details']['Contact-Number']}`}
                 >
-                  Call Us
+                  Call 
                 </Button>
               </Card.Body>
             </Card>

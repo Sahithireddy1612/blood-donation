@@ -62,7 +62,7 @@ const RecipientsForm = () => {
         });
         console.log("Server response after posting:", response.data);
         setRegistrationMessage("REGISTRATION SUCCESSFUL");
-        navigate('/success');
+        navigate('/submitted');
       } catch (error) {
         console.error("Registration failed:", error);
         setRegistrationMessage("REGISTRATION FAILED");
@@ -75,8 +75,8 @@ const RecipientsForm = () => {
       <div className="form-container">
         <div className="form-header">
           <h1>Recipient Registration</h1>
-          <h2>Join our cause</h2>
-          <h3>Help save lives by receiving blood</h3>
+          {/* <h2>Join our cause</h2> */}
+          <h3> Save Lives By Receiving Blood</h3>
         </div>
         <div className="card">
           <div className="card-header">RECIPIENT REGISTRATION FORM :</div>

@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Nav, Form, FormControl, Container } from 'react-bootstrap';
+import { Navbar, Nav,  Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 import './ProjectNavbarStyles.css';
+import SearchBar from '../navigation/searchbar';
+
 
 function ProjectNavbar() {
-  const [showSearchBar, setShowSearchBar] = useState(false);
-
-  const toggleSearchBar = () => {
-    setShowSearchBar(!showSearchBar);
-  };
+  
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="navbar">
@@ -39,26 +36,17 @@ function ProjectNavbar() {
               <Nav.Link as={NavLink} to="/recipients" className="nav-link" activeClassName="active">Recipients</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link as={NavLink} to="/settings" className="nav-link" activeClassName="active">Volunteers</Nav.Link>
+              <Nav.Link as={NavLink} to="/blood-banks" className="nav-link" activeClassName="active">Blood-Banks</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link as={NavLink} to="/RecipientsForm" className="nav-link" activeClassName="active">Need-Blood</Nav.Link>
             </Nav.Item>
           </Nav>
-          <FontAwesomeIcon icon={faSearch} className="search-icon" onClick={toggleSearchBar} />
+         
         </Navbar.Collapse>
       </Container>
-      {showSearchBar && (
-        <div className="search-bar-popup">
-          <Container>
-            <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="mr-2"
-                aria-label="Search"
-              />
-            </Form>
-          </Container>
-        </div>
-      )}
+      
+      <SearchBar/>
     </Navbar>
   );
 }

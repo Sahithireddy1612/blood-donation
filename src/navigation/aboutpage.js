@@ -2,6 +2,7 @@ import React from 'react';
 import DonateButton from '../components/projectbutton/projectbutton';
 import './aboutpage.css';
 import VolunteersArrow from '../components/volunteerarrow/volunteerarrow';
+import Testimonials from '../testimonials/testimonials';
 
 function About() {
   return (
@@ -114,24 +115,36 @@ function About() {
           </div>
         </div>
       </div>
-      <div className="impacting-section">
-        <h2 className="impacting-heading">A LIFE OR DEATH ISSUE</h2>
-        <p className="impacting-content">
-          Globally, there is not enough blood to treat sick patients and available blood is often not safe because of poor donor selection and testing practices. Both directly and indirectly this causes unnecessary death and suffering on an unimaginable scale that Global Blood Fund strives to overcome.
-        </p>
-      </div>
       <hr className='line'/>
+     
       <div className="join-movement-section">
         <div className="join-movement-content">
           <div className="join-movement-text">
             <h2 className="join-movement-heading">JOIN THE MOVEMENT</h2>
             <p>Be the first to hear about giving updates, collaborations and how you can help end the global inequalities for accessing safe blood.</p>
           </div>
+        
           <div className="join-movement-arrow">
+         
             <VolunteersArrow />
           </div>
+          
+
         </div>
+        
       </div>
+      <hr className='line'/>
+      
+      <div className="impacting-section">
+        <h2 className="impacting-heading">A LIFE OR DEATH ISSUE</h2>
+        <p className="impacting-content">
+          Globally, there is not enough blood to treat sick patients and available blood is often not safe because of poor donor selection and testing practices. Both directly and indirectly this causes unnecessary death and suffering on an unimaginable scale that Global Blood Fund strives to overcome.
+        </p>
+      </div>
+     
+     
+      <hr className='line'/>
+      <Testimonials/>
     </div>
   );
 }

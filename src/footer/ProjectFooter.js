@@ -1,5 +1,6 @@
 import React from 'react';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
+import { NavLink } from 'react-router-dom';
 
 export default function ProjectFooter() {
   return (
@@ -25,7 +26,6 @@ export default function ProjectFooter() {
           <a href='https://www.linkedin.com/uas/login?session_redirect=%2Fcompany%2F5337301' className='me-4 text-reset'>
             <MDBIcon fab icon="linkedin" />
           </a>
-          
         </div>
       </section>
 
@@ -45,43 +45,48 @@ export default function ProjectFooter() {
             <MDBCol md="2" lg="2" xl="2" className='mx-auto mb-4'>
               <h6 className='text-uppercase fw-bold mb-4'>WHY BLOOD?</h6>
               <p>
-                <a href='#!' className='text-reset'>
-                  IMPACT
-                </a>
+                <NavLink to='/home' className='text-reset'>
+                  HOME
+                </NavLink>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
+                <NavLink to='/news' className='text-reset'>
                   NEWS
-                </a>
+                </NavLink>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
+                <NavLink to='/faq' className='text-reset'>
                   FAQ
-                </a>
+                </NavLink>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
+                <NavLink to='/about' className='text-reset'>
                   ABOUT
-                </a>
+                </NavLink>
               </p>
             </MDBCol>
 
             <MDBCol md="3" lg="2" xl="2" className='mx-auto mb-4'>
               <h6 className='text-uppercase fw-bold mb-4'>Useful links</h6>
               <p>
-                <a href='#!' className='text-reset'>
+                <NavLink to='/donors' className='text-reset'>
                   Donors
-                </a>
+                </NavLink>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
-                  Settings
-                </a>
+                <NavLink to='/recipients' className='text-reset'>
+                  Recipients
+                </NavLink>
               </p>
               <p>
-                <a href='#!' className='text-reset'>
+                <NavLink to='/blood-banks' className='text-reset'>
+                  BloodBanks
+                </NavLink>
+              </p>
+              <p>
+              <NavLink to='/RecipientsForm' className='text-reset'>
                   Help
-                </a>
+                </NavLink>
               </p>
             </MDBCol>
 

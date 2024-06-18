@@ -46,7 +46,7 @@ const Donors = () => {
                   variant="primary"
                   onClick={() => window.location.href = `tel:${donor['Contact-details']['Contact-Number']}`}
                 >
-                  Call Us
+                  Call Or Message
                 </Button>
               </Card.Body>
             </Card>
