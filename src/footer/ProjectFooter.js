@@ -49,19 +49,15 @@ export default function ProjectFooter() {
                   HOME
                 </NavLink>
               </p>
-              <p>
-                <NavLink to='/news' className='text-reset'>
-                  NEWS
-                </NavLink>
-              </p>
-              <p>
-                <NavLink to='/faq' className='text-reset'>
-                  FAQ
-                </NavLink>
-              </p>
+              
               <p>
                 <NavLink to='/about' className='text-reset'>
                   ABOUT
+                </NavLink>
+              </p>
+              <p>
+              <NavLink to='/RecipientsForm' className='text-reset'>
+                  Help
                 </NavLink>
               </p>
             </MDBCol>
@@ -83,11 +79,7 @@ export default function ProjectFooter() {
                   BloodBanks
                 </NavLink>
               </p>
-              <p>
-              <NavLink to='/RecipientsForm' className='text-reset'>
-                  Help
-                </NavLink>
-              </p>
+             
             </MDBCol>
 
             <MDBCol md="4" lg="3" xl="3" className='mx-auto mb-md-0 mb-4'>
