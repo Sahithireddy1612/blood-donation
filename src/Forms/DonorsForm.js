@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { useDropzone } from 'react-dropzone';
 import SubmitButton from "../components/projectsubmit";
 import "./donorsform.css";
 
@@ -9,17 +10,28 @@ const BloodDonorForm = () => {
     Name: "",
     Age: "",
     "Blood-type": "",
-    ContactNumber: "",
-    Email: "",
+    "Contact-details": {
+      "Contact-Number": "",
+      "Email": ""
+    },
     "last-donated": ""
   });
+  const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
   const [registrationMessage, setRegistrationMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setDonor({ ...donor, [name]: value });
+    if (name in donor['Contact-details']) {
+      setDonor({ ...donor, "Contact-details": { ...donor["Contact-details"], [name]: value } });
+    } else {
+      setDonor({ ...donor, [name]: value });
+    }
+  };
+
+  const handleDrop = (acceptedFiles) => {
+    setImage(acceptedFiles[0]);
   };
 
   const validation = () => {
@@ -27,10 +39,10 @@ const BloodDonorForm = () => {
     if (donor.Name.length > 30) {
       errors.Name = "NAME MUST BE LESS THAN 30 CHARACTERS!!";
     }
-    if (!donor.Email.includes("@")) {
+    if (!donor["Contact-details"].Email.includes("@")) {
       errors.Email = "Invalid Email Address!!";
     }
-    if (donor.ContactNumber.length !== 10) {
+    if (donor["Contact-details"]["Contact-Number"].length !== 10) {
       errors.ContactNumber = "PHONE NUMBER MUST BE 10 DIGITS";
     }
     return errors;
@@ -43,10 +55,21 @@ const BloodDonorForm = () => {
       setErrors(errors);
     } else {
       setErrors({});
+      const formData = new FormData();
+      for (const key in donor) {
+        if (key === "Contact-details") {
+          formData.append("Contact-details", JSON.stringify(donor[key]));
+        } else {
+          formData.append(key, donor[key]);
+        }
+      }
+      if (image) {
+        formData.append("image", image);
+      }
       try {
-        const response = await axios.post("http://localhost:3001/Donors", donor, {
+        const response = await axios.post("http://localhost:3001/Donors", formData, {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "multipart/form-data"
           }
         });
         console.log("Server response after posting:", response.data);
@@ -58,6 +81,8 @@ const BloodDonorForm = () => {
       }
     }
   };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
 
   return (
     <div className="form">
@@ -114,14 +139,14 @@ const BloodDonorForm = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="ContactNumber">Contact Number:</label>
+                <label htmlFor="Contact-Number">Contact Number:</label>
                 <input
                   type="text"
                   className={`form-control ${errors.ContactNumber ? "is-invalid" : ""}`}
-                  id="ContactNumber"
-                  name="ContactNumber"
+                  id="Contact-Number"
+                  name="Contact-Number"
                   placeholder="Enter contact number"
-                  value={donor.ContactNumber}
+                  value={donor["Contact-details"]["Contact-Number"]}
                   onChange={handleChange}
                 />
                 {errors.ContactNumber && <div className="invalid-feedback">{errors.ContactNumber}</div>}
@@ -135,7 +160,7 @@ const BloodDonorForm = () => {
                   id="Email"
                   name="Email"
                   placeholder="Enter email"
-                  value={donor.Email}
+                  value={donor["Contact-details"].Email}
                   onChange={handleChange}
                 />
                 {errors.Email && <div className="invalid-feedback">{errors.Email}</div>}
@@ -153,6 +178,18 @@ const BloodDonorForm = () => {
                   onChange={handleChange}
                 />
                 {errors["last-donated"] && <div className="invalid-feedback">{errors["last-donated"]}</div>}
+              </div>
+
+              <div className="form-group">
+                <label>Upload Image:</label>
+                <div {...getRootProps({ className: 'dropzone' })}>
+                  <input {...getInputProps()} />
+                  {image ? (
+                    <div>{image.name}</div>
+                  ) : (
+                    <p>Drag 'n' drop an image here, or click to select one</p>
+                  )}
+                </div>
               </div>
 
               {registrationMessage && (
