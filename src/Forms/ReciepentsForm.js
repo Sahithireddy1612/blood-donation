@@ -45,7 +45,7 @@ const RecipientsForm = () => {
     } else {
       setErrors({});
       try {
-        const response = await axios.post(" http://localhost:3001/Recipients", {
+        const response = await axios.post("http://localhost:3001/Recipients", {
           Name: recipient.Name,
           Age: recipient.Age,
           "Blood-type-needed": recipient["Blood-type-needed"],
