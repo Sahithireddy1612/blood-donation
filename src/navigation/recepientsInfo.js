@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import './recepients.css'; // Make sure this path is correct
+import './recepients.css'; 
 
 const Recipients = () => {
   const [recipients, setRecipients] = useState([]);
