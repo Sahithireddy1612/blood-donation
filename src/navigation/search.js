@@ -16,7 +16,7 @@ function SearchResults() {
         setLoading(true);
 
         const [donorsResponse, bloodBanksResponse] = await Promise.all([
-          axios.get('http://localhost:3001/Donors'),
+          axios.get(' http://localhost:3001/Donors'),
           axios.get('http://localhost:3001/Blood-Banks')
         ]);
 
