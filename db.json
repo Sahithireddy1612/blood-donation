@@ -1263,8 +1263,10 @@
       "Name": "Sahithi Parthireddy",
       "Age": "24",
       "Blood-type": "o-positive",
-      "ContactNumber": "6304159224",
-      "Email": "sahithi@gmail.com",
+      "Contact-details": {
+        "Contact-Number": "6304159224",
+        "Email": "Sahithireddy.1612@gmail.com"
+      },
       "last-donated": "last year",
       "image-url": "/images/women2.jpeg"
     },
