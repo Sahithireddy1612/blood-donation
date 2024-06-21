@@ -12,7 +12,8 @@ const Donors = () => {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/Donors');
+        const response = await axios.get('http://localhost:3001/Donors'); 
+        
         setDonors(response.data);
       } catch (error) {
         console.error('Error fetching the donors data', error);

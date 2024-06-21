@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
 import SubmitButton from "../components/projectsubmit";
 import "./donorsform.css";
 
@@ -14,9 +13,9 @@ const BloodDonorForm = () => {
       "Contact-Number": "",
       "Email": ""
     },
-    "last-donated": ""
+    "last-donated": "",
+    "image-url": ""
   });
-  const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
   const [registrationMessage, setRegistrationMessage] = useState("");
   const navigate = useNavigate();
@@ -28,10 +27,6 @@ const BloodDonorForm = () => {
     } else {
       setDonor({ ...donor, [name]: value });
     }
-  };
-
-  const handleDrop = (acceptedFiles) => {
-    setImage(acceptedFiles[0]);
   };
 
   const validation = () => {
@@ -55,21 +50,10 @@ const BloodDonorForm = () => {
       setErrors(errors);
     } else {
       setErrors({});
-      const formData = new FormData();
-      for (const key in donor) {
-        if (key === "Contact-details") {
-          formData.append("Contact-details", JSON.stringify(donor[key]));
-        } else {
-          formData.append(key, donor[key]);
-        }
-      }
-      if (image) {
-        formData.append("image", image);
-      }
       try {
-        const response = await axios.post("http://localhost:3001/Donors", formData, {
+        const response = await axios.post("http://localhost:3001/Donors", donor, {
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "application/json"
           }
         });
         console.log("Server response after posting:", response.data);
@@ -81,8 +65,6 @@ const BloodDonorForm = () => {
       }
     }
   };
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop: handleDrop });
 
   return (
     <div className="form">
@@ -178,18 +160,6 @@ const BloodDonorForm = () => {
                   onChange={handleChange}
                 />
                 {errors["last-donated"] && <div className="invalid-feedback">{errors["last-donated"]}</div>}
-              </div>
-
-              <div className="form-group">
-                <label>Upload Image:</label>
-                <div {...getRootProps({ className: 'dropzone' })}>
-                  <input {...getInputProps()} />
-                  {image ? (
-                    <div>{image.name}</div>
-                  ) : (
-                    <p>Drag 'n' drop an image here, or click to select one</p>
-                  )}
-                </div>
               </div>
 
               {registrationMessage && (
