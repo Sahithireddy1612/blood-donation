@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 import { useNavigate } from 'react-router-dom';
 import SubmitButton from "../components/projectsubmit";
 import "./recepientsform.css";
@@ -9,7 +10,6 @@ const RecipientsForm = () => {
     Name: "",
     Age: "",
     "Blood-type-needed": "",
-   
     "Contact-Number": "",
     Email: "",
     "Required-On": ""
@@ -23,17 +23,35 @@ const RecipientsForm = () => {
     setRecipient({ ...recipient, [name]: value });
   };
 
+
+  const handleAgeChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 2) {
+      setRecipient({ ...recipient, Age: value });
+    }
+  };
   const validation = () => {
     let errors = {};
     if (recipient.Name.length > 30) {
-      errors.Name = "NAME MUST BE LESS THAN 30 CHARACTERS!!";
+      errors.Name = "Name must be less than 30 characters";
     }
     if (!recipient.Email.includes("@")) {
-      errors.Email = "Invalid Email Address!!";
+      errors.Email = "Invalid Email Address";
     }
     if (recipient["Contact-Number"].length !== 10) {
-      errors["Contact-Number"] = "PHONE NUMBER MUST BE 10 DIGITS";
+      errors.ContactNumber = "Phone number must be exactly 10 digits";
     }
+
+    const ageRegex = /^\d{1,2}$/;
+    if (!ageRegex.test(recipient.Age)) {
+      errors.Age = "Age must be one or two digits";
+    }
+
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateRegex.test(recipient["Required-On"])) {
+      errors["Required-On"] = "Invalid date format (MM/DD/YYYY)";
+    }
+
     return errors;
   };
 
@@ -42,30 +60,16 @@ const RecipientsForm = () => {
     const errors = validation();
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
+      setRegistrationMessage("Registration failed: Please check your information.");
     } else {
       setErrors({});
       try {
-        const response = await axios.post("http://localhost:3001/Recipients", {
-          Name: recipient.Name,
-          Age: recipient.Age,
-          "Blood-type-needed": recipient["Blood-type-needed"],
-         
-          "Contact-details": {
-            "Contact-Number": recipient["Contact-Number"],
-            Email: recipient.Email
-          },
-          "Required-On": recipient["Required-On"]
-        }, {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-        console.log("Server response after posting:", response.data);
-        setRegistrationMessage("REGISTRATION SUCCESSFUL");
-        navigate('/submitted');
+        await addDoc(collection(db, "recipients"), recipient);
+        setRegistrationMessage("Registration successful");
+        navigate('/submitted'); 
       } catch (error) {
         console.error("Registration failed:", error);
-        setRegistrationMessage("REGISTRATION FAILED");
+        setRegistrationMessage("Registration failed");
       }
     }
   };
@@ -75,11 +79,10 @@ const RecipientsForm = () => {
       <div className="form-container">
         <div className="form-header">
           <h1>Recipient Registration</h1>
-          {/* <h2>Join our cause</h2> */}
-          <h3> Save Lives By Receiving Blood</h3>
+          <h3>Save Lives By Receiving Blood</h3>
         </div>
         <div className="card">
-          <div className="card-header">RECIPIENT REGISTRATION FORM :</div>
+          <div className="card-header">RECIPIENT REGISTRATION FORM:</div>
           <div className="card-body">
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -92,6 +95,7 @@ const RecipientsForm = () => {
                   placeholder="Enter name"
                   value={recipient.Name}
                   onChange={handleChange}
+                  required
                 />
                 {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
               </div>
@@ -105,39 +109,51 @@ const RecipientsForm = () => {
                   name="Age"
                   placeholder="Enter age"
                   value={recipient.Age}
-                  onChange={handleChange}
+                  onChange={handleAgeChange}
+                  required
                 />
                 {errors.Age && <div className="invalid-feedback">{errors.Age}</div>}
               </div>
 
               <div className="form-group">
                 <label htmlFor="Blood-type-needed">Blood Type Needed:</label>
-                <input
-                  type="text"
+                <select
                   className={`form-control ${errors["Blood-type-needed"] ? "is-invalid" : ""}`}
                   id="Blood-type-needed"
                   name="Blood-type-needed"
-                  placeholder="Enter blood type needed"
                   value={recipient["Blood-type-needed"]}
                   onChange={handleChange}
-                />
+                  required
+                >
+                  <option value="" disabled>Select blood type</option>
+                  <option value="A+">A-Positive</option>
+                  <option value="A-">A-Negative</option>
+                  <option value="B+">B-Positive</option>
+                  <option value="B-">B-Negative</option>
+                  <option value="AB+">AB-Positive</option>
+                  <option value="AB-">AB-Negative</option>
+                  <option value="O+">O-Positive</option>
+                  <option value="O-">O-Negative</option>
+                </select>
                 {errors["Blood-type-needed"] && <div className="invalid-feedback">{errors["Blood-type-needed"]}</div>}
               </div>
 
-              
 
               <div className="form-group">
                 <label htmlFor="Contact-Number">Contact Number:</label>
                 <input
-                  type="text"
-                  className={`form-control ${errors["Contact-Number"] ? "is-invalid" : ""}`}
+                  type="tel"
+                  className={`form-control ${errors.ContactNumber ? "is-invalid" : ""}`}
                   id="Contact-Number"
                   name="Contact-Number"
                   placeholder="Enter contact number"
                   value={recipient["Contact-Number"]}
                   onChange={handleChange}
+                  pattern="[0-9]{10}"
+                  maxLength="10"
+                  required
                 />
-                {errors["Contact-Number"] && <div className="invalid-feedback">{errors["Contact-Number"]}</div>}
+                {errors.ContactNumber && <div className="invalid-feedback">{errors.ContactNumber}</div>}
               </div>
 
               <div className="form-group">
@@ -150,31 +166,33 @@ const RecipientsForm = () => {
                   placeholder="Enter email"
                   value={recipient.Email}
                   onChange={handleChange}
+                  required
                 />
                 {errors.Email && <div className="invalid-feedback">{errors.Email}</div>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="Required-On">Required On:</label>
+                <label htmlFor="Required-On">Required On (MM/DD/YYYY):</label>
                 <input
-                  type="text"
+                  type="date"
                   className={`form-control ${errors["Required-On"] ? "is-invalid" : ""}`}
                   id="Required-On"
                   name="Required-On"
                   placeholder="Enter required date"
                   value={recipient["Required-On"]}
                   onChange={handleChange}
+                  required
                 />
                 {errors["Required-On"] && <div className="invalid-feedback">{errors["Required-On"]}</div>}
               </div>
 
               {registrationMessage && (
-                <div className={`alert ${registrationMessage.includes("SUCCESSFUL") ? "alert-success" : "alert-danger"}`}>
+                <div className={`alert ${registrationMessage.includes("successful") ? "alert-success" : "alert-danger"}`}>
                   {registrationMessage}
                 </div>
               )}
 
-              <SubmitButton handleSubmit={handleSubmit} />
+              <SubmitButton />
             </form>
           </div>
         </div>

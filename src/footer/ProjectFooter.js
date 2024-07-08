@@ -43,7 +43,7 @@ export default function ProjectFooter() {
             </MDBCol>
 
             <MDBCol md="2" lg="2" xl="2" className='mx-auto mb-4'>
-              <h6 className='text-uppercase fw-bold mb-4'>WHY BLOOD?</h6>
+              <h6 className='text-uppercase fw-bold mb-4'></h6>
               <p>
                 <NavLink to='/home' className='text-reset'>
                   HOME

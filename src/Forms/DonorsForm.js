@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { collection, addDoc } from "firebase/firestore";
+import { db, storage } from "../firebase/firebase";
 import { useNavigate } from 'react-router-dom';
 import SubmitButton from "../components/projectsubmit";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./donorsform.css";
 
 const BloodDonorForm = () => {
@@ -29,6 +31,21 @@ const BloodDonorForm = () => {
     }
   };
 
+  const handleAgeChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 2) {
+      setDonor({ ...donor, Age: value });
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    const fileRef = ref(storage, file.name);
+    await uploadBytes(fileRef, file);
+    const imageUrl = await getDownloadURL(fileRef);
+    setDonor({ ...donor, "image-url": imageUrl });
+  };
+
   const validation = () => {
     let errors = {};
     if (donor.Name.length > 30) {
@@ -40,6 +57,16 @@ const BloodDonorForm = () => {
     if (donor["Contact-details"]["Contact-Number"].length !== 10) {
       errors.ContactNumber = "PHONE NUMBER MUST BE 10 DIGITS";
     }
+
+    const lastDonatedDate = new Date(donor["last-donated"]);
+    const today = new Date();
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+
+    if (lastDonatedDate > oneMonthAgo) {
+      errors["last-donated"] = "You are not eligible to donate. Last donation must be more than one month ago.";
+    }
+
     return errors;
   };
 
@@ -48,17 +75,13 @@ const BloodDonorForm = () => {
     const errors = validation();
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
+      setRegistrationMessage("REGISTRATION FAILED: Check eligibility criteria.");
     } else {
       setErrors({});
       try {
-        const response = await axios.post("http://localhost:3001/Donors", donor, {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-        console.log("Server response after posting:", response.data);
+        await addDoc(collection(db, "donors"), donor);
         setRegistrationMessage("REGISTRATION SUCCESSFUL");
-        navigate('/submitted');
+        navigate('/submitted'); 
       } catch (error) {
         console.error("Registration failed:", error);
         setRegistrationMessage("REGISTRATION FAILED");
@@ -88,6 +111,7 @@ const BloodDonorForm = () => {
                   placeholder="Enter name"
                   value={donor.Name}
                   onChange={handleChange}
+                  required
                 />
                 {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
               </div>
@@ -95,41 +119,57 @@ const BloodDonorForm = () => {
               <div className="form-group">
                 <label htmlFor="Age">Age:</label>
                 <input
-                  type="text"
+                  type="number"
                   className={`form-control ${errors.Age ? "is-invalid" : ""}`}
                   id="Age"
                   name="Age"
                   placeholder="Enter age"
                   value={donor.Age}
-                  onChange={handleChange}
+                  onChange={handleAgeChange}
+                  min="18"
+                  max="65"
+                  maxLength="2"
+                  required
                 />
                 {errors.Age && <div className="invalid-feedback">{errors.Age}</div>}
               </div>
 
               <div className="form-group">
                 <label htmlFor="Blood-type">Blood Type:</label>
-                <input
-                  type="text"
+                <select
                   className={`form-control ${errors["Blood-type"] ? "is-invalid" : ""}`}
                   id="Blood-type"
                   name="Blood-type"
-                  placeholder="Enter blood type"
                   value={donor["Blood-type"]}
                   onChange={handleChange}
-                />
+                  required
+                >
+                  <option value="" disabled>Select blood type</option>
+                  <option value="A+">A-Positive</option>
+                  <option value="A-">A-Negative</option>
+                  <option value="B+">B-Positive</option>
+                  <option value="B-">B-Negative</option>
+                  <option value="AB+">AB-Positive</option>
+                  <option value="AB-">AB-Negative</option>
+                  <option value="O+">O-Positive</option>
+                  <option value="O-">O-Negative</option>
+                </select>
                 {errors["Blood-type"] && <div className="invalid-feedback">{errors["Blood-type"]}</div>}
               </div>
 
               <div className="form-group">
                 <label htmlFor="Contact-Number">Contact Number:</label>
                 <input
-                  type="text"
+                  type="tel"
                   className={`form-control ${errors.ContactNumber ? "is-invalid" : ""}`}
                   id="Contact-Number"
                   name="Contact-Number"
                   placeholder="Enter contact number"
                   value={donor["Contact-details"]["Contact-Number"]}
                   onChange={handleChange}
+                  pattern="[0-9]{10}"
+                  maxLength="10"
+                  required
                 />
                 {errors.ContactNumber && <div className="invalid-feedback">{errors.ContactNumber}</div>}
               </div>
@@ -144,20 +184,33 @@ const BloodDonorForm = () => {
                   placeholder="Enter email"
                   value={donor["Contact-details"].Email}
                   onChange={handleChange}
+                  required
                 />
                 {errors.Email && <div className="invalid-feedback">{errors.Email}</div>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="last-donated">Last Donated:</label>
+                <label htmlFor="image">Upload Image:</label>
                 <input
-                  type="text"
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="last-donated">Last Donated (MM/DD/YYYY):</label>
+                <input
+                  type="date"
                   className={`form-control ${errors["last-donated"] ? "is-invalid" : ""}`}
                   id="last-donated"
                   name="last-donated"
-                  placeholder="Enter last donated time"
                   value={donor["last-donated"]}
                   onChange={handleChange}
+                  required
                 />
                 {errors["last-donated"] && <div className="invalid-feedback">{errors["last-donated"]}</div>}
               </div>
@@ -168,7 +221,7 @@ const BloodDonorForm = () => {
                 </div>
               )}
 
-              <SubmitButton handleSubmit={handleSubmit} />
+              <SubmitButton />
             </form>
           </div>
         </div>

@@ -72,6 +72,15 @@ body {
 .blood-bank-card .btn-primary:hover {
     background-color: rgb(104, 50, 104);
 }
+.blood-groups-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .blood-groups-list li {
+    margin-left: 0; /* Optional: Adjust the left margin if needed */
+  }
+  
 
 @media (max-width: 1024px) {
     .blood-bank-card {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/firebase'; 
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
@@ -12,9 +13,11 @@ const Donors = () => {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/Donors'); 
+        const donorsCollection = collection(db, 'donors');
+        const donorSnapshot = await getDocs(donorsCollection);
+        const donorList = donorSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        setDonors(response.data);
+        setDonors(donorList);
       } catch (error) {
         console.error('Error fetching the donors data', error);
       }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/firebase'; 
 import './blood-banks.css';
 
 function BloodBanksPage() {
@@ -10,23 +11,24 @@ function BloodBanksPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3001/Blood-Banks');
-        console.log('Fetched blood banks:', response.data); 
-        setBloodBanks(response.data);
+        const querySnapshot = await getDocs(collection(db, 'blood-banks'));
+        const bloodBanksList = querySnapshot.docs.map(doc => doc.data());
+        console.log('Fetched blood banks:', bloodBanksList);
+        setBloodBanks(bloodBanksList);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   const handleContact = (contactInfo) => {
-    const isPhone = /^\d+$/.test(contactInfo); 
-    const isEmail = /\S+@\S+\.\S+/.test(contactInfo); 
-  
+    const isPhone = /^\d+$/.test(contactInfo);
+    const isEmail = /\S+@\S+\.\S+/.test(contactInfo);
+
     if (isPhone) {
       console.log('Calling:', contactInfo);
       window.open('tel:' + contactInfo, '_blank');
@@ -55,7 +57,7 @@ function BloodBanksPage() {
                 <h3 className='card-title'>{bank['blood-bank-name']}</h3>
                 <p className='card-text'>Contact: {bank['contact-details']}</p>
                 <p className='card-text'>Blood Groups Available:</p>
-                <ul className='card-text'>
+                <ul className='blood-groups-list'>
                   {bank['bloodgroups-available'].map((group, idx) => (
                     <li key={idx}>{group}</li>
                   ))}
