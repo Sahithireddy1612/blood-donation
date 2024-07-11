@@ -35,7 +35,7 @@ function Navigation() {
         <Route path="/VolunteersForm" element={<VolunteersForm />} />
         <Route path="/volunteer-arrow" element={<VolunteersArrow/>} />
         <Route path="/success" element={<Success />} />
-        <Route path="/search" element={<SearchResults/>} />
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
       <ProjectFooter/>
     </Router>

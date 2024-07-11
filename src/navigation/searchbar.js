@@ -18,7 +18,6 @@ function SearchBar() {
     e.preventDefault();
     navigate(`/search?query=${query}`);
   };
-
   return (
     <div>
       <div>

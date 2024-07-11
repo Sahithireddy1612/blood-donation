@@ -62,7 +62,7 @@ body {
   border-radius: 25px;
 }
 
-@media (max-width: 4000px) {
+@media (max-width: 8000px) {
   .navbar-brand img {
     width: 160px;
     height: 80px;
