@@ -21,11 +21,12 @@ function About() {
           </div>
         </div>
       </div>
+      <hr className='line'/>
       <div className="about-content">
         <div className="about-image">
-          <img src="/images/about-grpimg.png" alt="About Us" />
+          <img src="/images/about-grpimg.png" alt="About Us" className='aboutimg' />
         </div>
-        <hr className='line'/>
+      
         <div className="about-text">
           <div className="small-heading">About Us</div>
           <div className="large-heading">We're on a Mission!</div>
