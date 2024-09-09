@@ -1,5 +1,4 @@
 
-
 const { initializeApp } = require("firebase/app");
 const { getFirestore, collection, addDoc } = require("firebase/firestore");
 const fs = require('fs');

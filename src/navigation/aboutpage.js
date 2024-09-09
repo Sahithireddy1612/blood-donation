@@ -24,7 +24,7 @@ function About() {
       <hr className='line'/>
       <div className="about-content">
         <div className="about-image">
-          <img src="/images/about-grpimg.png" alt="About Us" className='aboutimg' />
+          <img src="/images/about-grpimg.png" alt="About Us" />
         </div>
       
         <div className="about-text">
